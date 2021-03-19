@@ -1,27 +1,22 @@
 package com.lucesapp.ui.screens
 
-import android.util.Log
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import com.google.gson.Gson
 import com.lucesapp.R
 import com.lucesapp.model.Product
 import com.lucesapp.ui.theme.LucesTheme
 import com.lucesapp.ui.views.ProductForm
-import com.lucesapp.utils.cast
 import com.lucesapp.viewmodel.FirestoreViewModel
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 import dev.chrisbanes.accompanist.insets.statusBarsPadding
@@ -64,7 +59,7 @@ fun ProductFormScreen(
                                 name = name, description = description,
                                 price = price.toLong(),
                                 retailPrice = retail.toLong())
-                            firestoreViewModel.addProduct(product = product)
+                            firestoreViewModel.addData(data = product)
                         }, isLoading = loading)
                     }
                 }
@@ -88,7 +83,7 @@ fun FormTopAppBar(topAppBarText: String, onBackPressed: () -> Unit) {
         navigationIcon = {
             IconButton(onClick = onBackPressed) {
                 Icon(
-                    imageVector = Icons.Filled.ChevronLeft,
+                    imageVector = Icons.Filled.ArrowBack,
                     contentDescription = stringResource(id = R.string.back)
                 )
             }

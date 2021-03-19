@@ -10,4 +10,7 @@
     <string name="product_price">Precio</string>
     <string name="product_price_retail">Precio publico</string>
     <string name="product_create">Crear producto</string>
+    <string name="sale_create">Crear venta</string>
+    <string name="product_select">Seleccionar producto</string>
+    <string name="sale_quantity">Cantidad</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.lucesapp.ui.screens
 
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -17,11 +18,13 @@ import com.lucesapp.R
 import com.lucesapp.Screen
 import com.lucesapp.ui.theme.LucesTheme
 import com.lucesapp.ui.theme.backgroundSplash
+import com.lucesapp.ui.theme.logoColorSplash
 import com.lucesapp.viewmodel.FirestoreViewModel
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 import dev.chrisbanes.accompanist.insets.statusBarsPadding
 
+@ExperimentalFoundationApi
 @ExperimentalAnimationApi
 @Composable
 fun HomeScreen(
@@ -35,7 +38,7 @@ fun HomeScreen(
                 topBar = { AppBar() },
                 bottomBar = {
                     BottomNavigation(
-                        backgroundColor = MaterialTheme.colors.background,
+                        backgroundColor = MaterialTheme.colors.surface,
                         modifier = Modifier.navigationBarsPadding()
                     ) {
                         val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -55,17 +58,20 @@ fun HomeScreen(
                                 },
                                 icon = {
                                     Icon(
-                                        screen.icon,
+                                        if (currentRoute == screen.route) screen.iconFilled
+                                            else screen.icon,
                                         contentDescription = null,
                                         modifier = Modifier.size(18.dp),
-                                        tint = MaterialTheme.colors.primary
+                                        tint = if (currentRoute == screen.route)
+                                            MaterialTheme.colors.primary else MaterialTheme.colors.secondary
                                     )
                                 },
                                 label = {
                                     Text(
                                         stringResource(id = screen.resourceId).toUpperCase(),
                                         style = MaterialTheme.typography.caption,
-                                        color = MaterialTheme.colors.primary
+                                        color = if (currentRoute == screen.route)
+                                            MaterialTheme.colors.primary else MaterialTheme.colors.secondary
                                     )
                                 }
                             )

@@ -4,11 +4,11 @@ import android.content.Intent
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -30,13 +30,14 @@ import dev.chrisbanes.accompanist.coil.CoilImage
 import java.util.*
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import com.lucesapp.R
 import com.lucesapp.ui.activities.ProductFormActivity
 import com.lucesapp.ui.theme.typography
-import dev.chrisbanes.accompanist.insets.navigationBarsPadding
-import java.text.NumberFormat
+import com.lucesapp.utils.price
 
+@ExperimentalFoundationApi
 @ExperimentalAnimationApi
 @Composable
 fun ProductsScreen(
@@ -79,12 +80,15 @@ fun ProductsScreen(
             }
             Box(modifier = Modifier) {
                 val listState = rememberLazyListState()
-                LazyColumn(content = {
+                LazyVerticalGrid(
+                    cells = GridCells.Fixed(count = 2),
+                    state = listState,
+                    modifier = Modifier.padding(bottom = 110.dp)
+                ) {
                     items(products){ product ->
                         ProductRow(product =  product, modifier = Modifier)
                     }
-                }, state = listState,
-                    modifier = Modifier.padding(bottom = 110.dp))
+                }
             }
         }
     }
@@ -111,6 +115,18 @@ fun ProductRow(
                     data = product.image ?: "",
                     contentDescription = product.name,
                     contentScale = ContentScale.Crop,
+                    fadeIn = true,
+                    loading = {
+                        Box(Modifier.matchParentSize()) {
+                            CircularProgressIndicator(Modifier.align(Alignment.Center))
+                        }
+                    },
+                    error = {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_logo_luces),
+                            contentDescription = null
+                        )
+                    },
                 )
                 Column(
                     Modifier
@@ -155,12 +171,13 @@ fun ProductRow(
 }
 
 @Composable
-fun PriceTag(textColor: Color, price: Long) {
+fun PriceTag(textColor: Color,
+             price: Long,
+             textStyle : TextStyle = MaterialTheme.typography.caption) {
     Box {
         Text(
-            text = "$ ${
-                NumberFormat.getNumberInstance(Locale.US).format(price)}",
-            style = MaterialTheme.typography.caption,
+            text = price.price(),
+            style = textStyle,
             maxLines = 1,
             color = textColor
         )

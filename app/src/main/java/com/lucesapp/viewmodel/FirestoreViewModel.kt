@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.Source
 import com.lucesapp.model.Product
 import com.lucesapp.model.Sale
@@ -38,7 +39,6 @@ class FirestoreViewModel(app: Application) : AndroidViewModel(app), CoroutineSco
     val dataAdded: LiveData<String> = _dataAdded
 
     private val db = FirebaseFirestore.getInstance()
-    private val source = Source.DEFAULT
 
     fun getProducts(){
         _showLoading.postValue(true)
@@ -60,23 +60,31 @@ class FirestoreViewModel(app: Application) : AndroidViewModel(app), CoroutineSco
     fun getSales() {
         _showLoading.postValue(true)
         val docRef = db.collection(SALES_COLLECTION)
-        val itemList = ArrayList<Sale>()
-        docRef.get(source).addOnSuccessListener { result ->
-            for (document in result) {
-                val sale = document.toObject(Sale::class.java)
-                sale.id = document.id
-                itemList.add(sale)
+            .orderBy("created", Query.Direction.DESCENDING)
+
+        docRef.addSnapshotListener { snapshot, e ->
+            if (snapshot != null) {
+                val itemList = ArrayList<Sale>()
+                for (document in snapshot) {
+                    val sale = document.toObject(Sale::class.java)
+                    sale.id = document.id
+                    itemList.add(sale)
+                }
+                _showLoading.postValue(false)
+                _sales.postValue(itemList)
             }
-            _showLoading.postValue(false)
-            _sales.postValue(itemList)
         }
     }
 
-    fun addProduct(product: Product) {
+    fun addData(data: Any) {
         _showLoading.postValue(true)
-        val docRef = db.collection(PRODUCT_COLLECTION)
+        var collection = PRODUCT_COLLECTION
+        if(data is Sale){
+            collection = SALES_COLLECTION
+        }
+        val docRef = db.collection(collection)
         docRef
-            .add(product)
+            .add(data)
             .addOnSuccessListener { documentReference ->
                 _error.postValue("")
                 _dataAdded.postValue(documentReference.id)
@@ -86,23 +94,6 @@ class FirestoreViewModel(app: Application) : AndroidViewModel(app), CoroutineSco
                 _error.postValue(e.localizedMessage)
                 _showLoading.postValue(false)
                 _dataAdded.postValue("")
-            }
-    }
-
-    fun addSale(sale: Sale) {
-        _showLoading.postValue(true)
-        val docRef = db.collection(SALES_COLLECTION)
-        docRef
-            .add(sale)
-            .addOnSuccessListener { documentReference ->
-                _error.postValue("")
-                _dataAdded.postValue(documentReference.id)
-                _showLoading.postValue(false)
-            }
-            .addOnFailureListener { e ->
-                _dataAdded.postValue("")
-                _error.postValue(e.localizedMessage)
-                _showLoading.postValue(false)
             }
     }
 

@@ -28,5 +28,9 @@
             android:name=".ui.activities.ProductFormActivity"
             android:label="@string/product_create"
             android:theme="@style/Theme.LucesApp.NoActionBar" />
+        <activity
+            android:name=".ui.activities.SaleFormActivity"
+            android:label="@string/sale_create"
+            android:theme="@style/Theme.LucesApp.NoActionBar" />
     </application>
 </manifest>

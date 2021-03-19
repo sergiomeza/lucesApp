@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">LucesApp</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="button_init">Iniciar</string>
+    <string name="button_sales">Ventas</string>
+    <string name="button_products">Productos</string>
+    <string name="back">Atras</string>
+    <string name="product_name">Nombre producto</string>
+    <string name="product_description">Descripción</string>
+    <string name="product_price">Precio</string>
+    <string name="product_price_retail">Precio publico</string>
+    <string name="product_create">Crear producto</string>
+</resources>
